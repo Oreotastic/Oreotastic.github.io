@@ -265,15 +265,17 @@ const resetGame = () => {
       board[i][j].innerHTML = ''
     }
   }
+  //clears victory messages if any are available
   try {
     const victory = document.querySelectorAll('.victory')
     for(msg of victory) {
       msg.innerHTML = ''
     }
-    
   } catch (error) {
     console.log('Error: NoMessageAvailable')
   }
+
+  //sets turn to player One again
   boardEl.removeEventListener('click', playerTwo)
   boardEl.addEventListener('click', playerOne)
 }
