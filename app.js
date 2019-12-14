@@ -87,7 +87,7 @@ const movesLeft = () => {
 //----------------------------------------------------
 const victoryMessage = (player) => {
     const victory = `
-    <div id="victory">
+    <div class="victory">
       <h1>Player ${player} Wins!</h1>
     </div>
     `
@@ -127,15 +127,19 @@ const checkWinner = (player) => {
   //checks for a horizontal win
   //------------------------------------
   for(i = 0; i < board.length; i++) {
+    tempArr = board[i]
     for(j = 0; j < board[i].length; j++) {
-      tempArr = board[i]
-      if(leftCount < 3){
-        if(player === tempArr[j].innerText && j !== board.length-1) {
-          leftCount++
+      if(leftCount < board.length){
+        if(leftCount === 1 && j === board.length-1) {
+          leftCount = 0
         } else {
-          leftCount = 0;
+          if(player === tempArr[j].innerText) {
+            leftCount++
+          } else {
+            leftCount = 0;
+          }
         }
-      } else if(leftCount === 3) {
+      } else if(leftCount === board.length) {
         return true
       }
     }
@@ -145,16 +149,20 @@ const checkWinner = (player) => {
   
   //checks for a vertical win
   //------------------------------------
-  for(i = 0; i < colArr.length; i++) {
-    for(j = 0; j < colArr[i].length; j++) {
-      tempArr = colArr[i]
-      if(downCount < 3){
-        if(player === tempArr[j].innerText && j !== colArr[i].length-1) {
-          downCount++
+  for(let i = 0; i < colArr.length; i++) {
+    tempArr = colArr[i]
+    for(let j = 0; j < colArr[i].length; j++) {
+      if(downCount < board.length) {
+        if(downCount === 1 && j === colArr.length-1) {
+          downCount = 0
         } else {
-          downCount = 0;
+          if(player === tempArr[j].innerText) {
+            downCount++
+          } else {
+            downCount = 0;
+          }
         }
-      } else if(downCount === 3) {
+      } else if (downCount === board.length){
         return true
       }
     }
@@ -256,6 +264,15 @@ const resetGame = () => {
     for(j in board) {
       board[i][j].innerHTML = ''
     }
+  }
+  try {
+    const victory = document.querySelectorAll('.victory')
+    for(msg of victory) {
+      msg.innerHTML = ''
+    }
+    
+  } catch (error) {
+    console.log('Error: NoMessageAvailable')
   }
   boardEl.removeEventListener('click', playerTwo)
   boardEl.addEventListener('click', playerOne)

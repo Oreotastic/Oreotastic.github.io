@@ -142,7 +142,7 @@ footer {
   transition-duration: 2s
 }
 
-#victory {
+.victory {
   color: #fff;
   background: lime;
   font-family: 'Comic Sans MS';
