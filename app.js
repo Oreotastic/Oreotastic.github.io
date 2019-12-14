@@ -1,17 +1,5 @@
-// Winner?
-let winnerX = false
-let winnerO = false
-
-//remaining moves? 
-let remaining = true
-
 //the board
 let board
-let oArray = []
-let xArray = []
-
-//count X 
-let diagonalCountO = 0
 
 //Grabs needed elements
 const boardEl = document.querySelector('#board')
@@ -25,7 +13,6 @@ let players = [
   'O'
 ]
 //----------------------------------------------------
-
 
 
 //creates board array to keep track of positions of each players mark on the board
@@ -46,20 +33,18 @@ const setBoard = () => {
   return boxes
 }
 
-
+//creates the board
 board = setBoard()
 
 
 //sets the position of player 1's "X" when placed
 //----------------------------------------------------
 const setX = (event) => {
-
   for(i in board) {
     for(j in board) {
       if(event.target.innerHTML === '') {
         if(board[i][j] === event.target) {
           board[i][j].innerHTML = `<span>${players[0]}</span>`
-          xArray.push(event.target.innerText)
         }
       }
     }
@@ -75,14 +60,11 @@ const setO = (event) => {
       if(event.target.innerHTML === '') {
         if(board[i][j] === event.target) {
           board[i][j].innerHTML = `<span>${players[1]}</span>`
-          oArray.push(event.target.innerText)
         }
       }
     }
   }
 }
-
-
 
 
 //keeps track if there are no more moves left
@@ -91,17 +73,17 @@ const movesLeft = () => {
   for(i in board) {
     for(j in board) {
       if(board[i][j].innerText === '') {
-        remaining = true
+        return true
         break
       } else {
-        remaining = false
+        return false
       }
     }
   }
 }
 
 
-//Prints message when no moves remain
+//Prints message when win condition is met
 //----------------------------------------------------
 const victoryMessage = (player) => {
     const victory = `
@@ -116,18 +98,34 @@ const victoryMessage = (player) => {
 //checks if there is a winner
 //----------------------------------------------------
 const checkWinner = (player) => {
+
+  //used to hold an array of markers
   let tempArr 
-  let colArr = [
-    [board[0][0], board[1][0], board[2][0]],
-    [board[0][1], board[1][1], board[2][1]],
-    [board[0][2], board[1][2], board[2][2]],
-  ]
+
+  //array that keeps track of columns for further win conditions
+  let colArr = []
+
+  //builds said array
+  //----------------------------
+  for(i in board){
+    colArr.push([])
+  }
   
+  for(i in board){
+    for(j in board) {
+      colArr[i].push(board[j][i])
+    }
+  }
+  //-----------------------------
+
+  //counters for keeping track of each instance of marker for each win condition
   let leftCount = 0
   let downCount = 0
   let diagonalCount = 0
   
   
+  //checks for a horizontal win
+  //------------------------------------
   for(i = 0; i < board.length; i++) {
     for(j = 0; j < board[i].length; j++) {
       tempArr = board[i]
@@ -137,13 +135,16 @@ const checkWinner = (player) => {
         } else {
           leftCount = 0;
         }
-      }
-      if(leftCount === 3) {
+      } else if(leftCount === 3) {
         return true
       }
     }
   }
+  //------------------------------------
+
   
+  //checks for a vertical win
+  //------------------------------------
   for(i = 0; i < colArr.length; i++) {
     for(j = 0; j < colArr[i].length; j++) {
       tempArr = colArr[i]
@@ -154,13 +155,16 @@ const checkWinner = (player) => {
         } else {
           downCount = 0;
         }
-      }
-      if(downCount === 3) {
+      } else if(downCount === 3) {
         return true
       }
     }
   }
+  //------------------------------------
+
   
+  //checks for a diagonal win
+  //------------------------------------
   if(board[0][0].innerText === player) {
     for(i = 0; i < board.length; i++) {
       if(diagonalCount < 3) {
@@ -188,6 +192,7 @@ const checkWinner = (player) => {
       }
     }
   } 
+  //------------------------------------
   
 }
   
@@ -195,12 +200,17 @@ const checkWinner = (player) => {
 //Keeps track of each players turn
 //----------------------------------------------------
 const playerOne = (event) => {
-  if(event.target.innerHTML === '') {
+  //if no marker is inside the block, place marker,
+  //check if win condition is met, 
+  //and end turn
+  if(event.target.innerHTML === '') { //checks if valid turn
     boardEl.removeEventListener('click', playerOne)
     boardEl.addEventListener('click', playerTwo)
   }
+  //places marker for player One
   setX(event)
   
+  //checks if player One met win condition
   if(checkWinner(players[0])) {
     boardEl.removeEventListener('click', playerTwo)
     victoryMessage(players[0])
@@ -227,8 +237,11 @@ const playerTwo = (event) => {
 //Adds functionality to button to start game
 //---------------------------------------------------
 const startGame = () => {
-  boardEl.addEventListener('click', playerOne)
-  for(i in board) {
+  //adds the ability to place a marker as player One
+  boardEl.addEventListener('click', playerOne) 
+
+  //clears board to begin game
+  for(i in board) { 
     for(j in board) {
       board[i][j].innerHTML = ''
     }
@@ -239,11 +252,14 @@ const startGame = () => {
 //Adds functionality to button to reset the game
 //---------------------------------------------------
 const resetGame = () => {
+  //clears board for new game
   for(i in board) {
     for(j in board) {
       board[i][j].innerHTML = ''
     }
   }
+  boardEl.removeEventListener('click', playerTwo)
+  boardEl.addEventListener('click', playerOne)
 }
 
 start.addEventListener('click', startGame)
