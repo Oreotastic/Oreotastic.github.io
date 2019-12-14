@@ -130,7 +130,7 @@ const checkWinner = (player) => {
     for(j = 0; j < board[i].length; j++) {
       tempArr = board[i]
       if(leftCount < 3){
-        if(player === tempArr[j].innerText) {
+        if(player === tempArr[j].innerText && j !== board.length-1) {
           leftCount++
         } else {
           leftCount = 0;
@@ -149,9 +149,8 @@ const checkWinner = (player) => {
     for(j = 0; j < colArr[i].length; j++) {
       tempArr = colArr[i]
       if(downCount < 3){
-        if(player === tempArr[j].innerText) {
+        if(player === tempArr[j].innerText && j !== colArr[i].length-1) {
           downCount++
-
         } else {
           downCount = 0;
         }
